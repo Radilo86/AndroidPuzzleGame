@@ -58,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
         int redimensionAncho = dimensiones[2];
         int redimensionAlto = dimensiones[3];
 
-        int recortarAncho = redimensionAncho - 2 * abs(redimensionIzquierda);
-        int recortarAlto = redimensionAlto - 2 * abs(redimensionSuperior);
+        int recortarAncho = redimensionAncho - (2 * abs(redimensionIzquierda));
+        int recortarAlto = redimensionAlto - (2 * abs(redimensionSuperior));
 
         Bitmap redimensionBitmap = Bitmap.createScaledBitmap(bitmap,redimensionAncho,redimensionAlto,true);
         Bitmap recortarBitmap = Bitmap.createBitmap(redimensionBitmap,abs(redimensionIzquierda),abs(redimensionSuperior),recortarAncho,recortarAlto);
@@ -83,9 +83,9 @@ public class MainActivity extends AppCompatActivity {
     private int[] posicionRelativa(ImageView imageView){
         int[] ret = new int[4];
 
-        if (imageView == null || imageView.getDrawable() == null){
+        if (imageView == null || imageView.getDrawable() == null)
             return ret;
-        }
+
 
         float[] dimensionImagen = new float[9];
         imageView.getImageMatrix().getValues(dimensionImagen);
@@ -93,9 +93,9 @@ public class MainActivity extends AppCompatActivity {
         final float redimensionX = dimensionImagen[Matrix.MSCALE_X];
         final float redimensionY = dimensionImagen[Matrix.MSCALE_Y];
 
-        final Drawable drawable = imageView.getDrawable();
-        final int origenAncho = drawable.getIntrinsicWidth();
-        final int origenAlto = drawable.getIntrinsicHeight();
+        final Drawable draw = imageView.getDrawable();
+        final int origenAncho = draw.getIntrinsicWidth();
+        final int origenAlto = draw.getIntrinsicHeight();
 
         final int actualAncho = Math.round(origenAncho * redimensionX);
         final int actualAlto = Math.round(origenAlto * redimensionY);

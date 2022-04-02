@@ -1,10 +1,14 @@
 package fpuoc.puzzleandroide;
 
+import static java.lang.Math.abs;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.ImageView;
 
@@ -48,14 +52,26 @@ public class MainActivity extends AppCompatActivity {
         BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
         Bitmap bitmap = drawable.getBitmap();
 
-        int anchoPieza = bitmap.getWidth() / columnas;
-        int altoPieza = bitmap.getHeight() / filas;
+        int[] dimensiones = posicionRelativa(imageView);
+        int redimensionIzquierda = dimensiones[0];
+        int redimensionSuperior = dimensiones[1];
+        int redimensionAncho = dimensiones[2];
+        int redimensionAlto = dimensiones[3];
+
+        int recortarAncho = redimensionAncho - 2 * abs(redimensionIzquierda);
+        int recortarAlto = redimensionAlto - 2 * abs(redimensionSuperior);
+
+        Bitmap redimensionBitmap = Bitmap.createScaledBitmap(bitmap,redimensionAncho,redimensionAlto,true);
+        Bitmap recortarBitmap = Bitmap.createBitmap(redimensionBitmap,abs(redimensionIzquierda),abs(redimensionSuperior),recortarAncho,recortarAlto);
+
+        int anchoPieza = recortarAncho / columnas;
+        int altoPieza = recortarAlto / filas;
 
         int yCoord = 0;
         for (int fila = 0; fila < filas; fila++){
             int xCoord = 0;
             for (int columna = 0; columna < columnas; columna++){
-                piezas.add(Bitmap.createBitmap(bitmap,xCoord,yCoord,anchoPieza,altoPieza));
+                piezas.add(Bitmap.createBitmap(recortarBitmap,xCoord,yCoord,anchoPieza,altoPieza));
                 xCoord = xCoord + anchoPieza;
             }
             yCoord = yCoord + altoPieza;
@@ -63,4 +79,40 @@ public class MainActivity extends AppCompatActivity {
 
         return piezas;
     }
+
+    private int[] posicionRelativa(ImageView imageView){
+        int[] ret = new int[4];
+
+        if (imageView == null || imageView.getDrawable() == null){
+            return ret;
+        }
+
+        float[] dimensionImagen = new float[9];
+        imageView.getImageMatrix().getValues(dimensionImagen);
+
+        final float redimensionX = dimensionImagen[Matrix.MSCALE_X];
+        final float redimensionY = dimensionImagen[Matrix.MSCALE_Y];
+
+        final Drawable drawable = imageView.getDrawable();
+        final int origenAncho = drawable.getIntrinsicWidth();
+        final int origenAlto = drawable.getIntrinsicHeight();
+
+        final int actualAncho = Math.round(origenAncho * redimensionX);
+        final int actualAlto = Math.round(origenAlto * redimensionY);
+
+        ret[2] = actualAncho;
+        ret[3] = actualAlto;
+
+        int imgViewAncho = imageView.getWidth();
+        int imgViewAlto = imageView.getHeight();
+
+        int superior = (int)(imgViewAlto - actualAlto) / 2;
+        int izquierdo = (int)(imgViewAncho - actualAncho) / 2;
+
+        ret[0] = izquierdo;
+        ret[1] = superior;
+
+        return ret;
+    }
+
 }

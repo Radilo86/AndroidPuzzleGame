@@ -1,12 +1,5 @@
 package fpuoc.puzzleandroide;
 
-
-
-import static java.lang.Math.abs;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -17,9 +10,14 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.widget.ImageView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import java.util.ArrayList;
+
+import static java.lang.Math.abs;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //final RelativeLayout layout = findViewById(R.id.layout2);
         final ConstraintLayout layout = findViewById(R.id.layout2);
         ImageView imageView = findViewById(R.id.imageView2);
 
@@ -37,11 +36,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 piezas = seccionarImagen();
+                ControlTactil controltactil = new ControlTactil();
                 for (PiezaPuzzle piece : piezas) {
+                    piece.setOnTouchListener(controltactil);
                     layout.addView(piece);
-                    ImageView iv = new ImageView(getApplicationContext());
-                    //iv.setImageBitmap(piece);
-                    //layout.addView(iv);
                 }
             }
         });
@@ -49,9 +47,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private ArrayList<PiezaPuzzle> seccionarImagen() {
-        int filas = 4;
-        int columnas = 3;
-        int totalPiezas = filas * columnas;
+        int filas = 3;
+        int columnas = 2;
+        int totalPiezas = 6;
 
 
         ImageView imageView = findViewById(R.id.imageView2);
@@ -119,8 +117,8 @@ public class MainActivity extends AppCompatActivity {
                     path.lineTo(pieceBitmap.getWidth(), offsetY);
                 } else {
                     // top bump
-                    path.lineTo(offsetX + (pieceBitmap.getWidth() - offsetX) / 3, offsetY);
-                    path.cubicTo(offsetX + (pieceBitmap.getWidth() - offsetX) / 6, offsetY - bumpSize, offsetX + (pieceBitmap.getWidth() - offsetX) / 6 * 5, offsetY - bumpSize, offsetX + (pieceBitmap.getWidth() - offsetX) / 3 * 2, offsetY);
+                    path.lineTo(offsetX + (float)(pieceBitmap.getWidth() - offsetX) / 3, offsetY);
+                    path.cubicTo(offsetX + (float)(pieceBitmap.getWidth() - offsetX) / 6, offsetY - bumpSize, offsetX + (float)(pieceBitmap.getWidth() - offsetX) / 6 * 5, offsetY - bumpSize, offsetX + (float)(pieceBitmap.getWidth() - offsetX) / 3 * 2, offsetY);
                     path.lineTo(pieceBitmap.getWidth(), offsetY);
                 }
 
@@ -129,8 +127,8 @@ public class MainActivity extends AppCompatActivity {
                     path.lineTo(pieceBitmap.getWidth(), pieceBitmap.getHeight());
                 } else {
                     // right bump
-                    path.lineTo(pieceBitmap.getWidth(), offsetY + (pieceBitmap.getHeight() - offsetY) / 3);
-                    path.cubicTo(pieceBitmap.getWidth() - bumpSize,offsetY + (pieceBitmap.getHeight() - offsetY) / 6, pieceBitmap.getWidth() - bumpSize, offsetY + (pieceBitmap.getHeight() - offsetY) / 6 * 5, pieceBitmap.getWidth(), offsetY + (pieceBitmap.getHeight() - offsetY) / 3 * 2);
+                    path.lineTo(pieceBitmap.getWidth(), offsetY + (float)(pieceBitmap.getHeight() - offsetY) / 3);
+                    path.cubicTo(pieceBitmap.getWidth() - bumpSize,offsetY + (float)(pieceBitmap.getHeight() - offsetY) / 6, pieceBitmap.getWidth() - bumpSize, offsetY + (float)(pieceBitmap.getHeight() - offsetY) / 6 * 5, pieceBitmap.getWidth(), offsetY + (float)(pieceBitmap.getHeight() - offsetY) / 3 * 2);
                     path.lineTo(pieceBitmap.getWidth(), pieceBitmap.getHeight());
                 }
 
@@ -139,8 +137,8 @@ public class MainActivity extends AppCompatActivity {
                     path.lineTo(offsetX, pieceBitmap.getHeight());
                 } else {
                     // bottom bump
-                    path.lineTo(offsetX + (pieceBitmap.getWidth() - offsetX) / 3 * 2, pieceBitmap.getHeight());
-                    path.cubicTo(offsetX + (pieceBitmap.getWidth() - offsetX) / 6 * 5,pieceBitmap.getHeight() - bumpSize, offsetX + (pieceBitmap.getWidth() - offsetX) / 6, pieceBitmap.getHeight() - bumpSize, offsetX + (pieceBitmap.getWidth() - offsetX) / 3, pieceBitmap.getHeight());
+                    path.lineTo(offsetX + (float)(pieceBitmap.getWidth() - offsetX) / 3 * 2, pieceBitmap.getHeight());
+                    path.cubicTo(offsetX + (float)(pieceBitmap.getWidth() - offsetX) / 6 * 5,pieceBitmap.getHeight() - bumpSize, offsetX + (float)(pieceBitmap.getWidth() - offsetX) / 6, pieceBitmap.getHeight() - bumpSize, offsetX + (float)(pieceBitmap.getWidth() - offsetX) / 3, pieceBitmap.getHeight());
                     path.lineTo(offsetX, pieceBitmap.getHeight());
                 }
 
@@ -149,8 +147,8 @@ public class MainActivity extends AppCompatActivity {
                     path.close();
                 } else {
                     // left bump
-                    path.lineTo(offsetX, offsetY + (pieceBitmap.getHeight() - offsetY) / 3 * 2);
-                    path.cubicTo(offsetX - bumpSize, offsetY + (pieceBitmap.getHeight() - offsetY) / 6 * 5, offsetX - bumpSize, offsetY + (pieceBitmap.getHeight() - offsetY) / 6, offsetX, offsetY + (pieceBitmap.getHeight() - offsetY) / 3);
+                    path.lineTo(offsetX, offsetY + (float)(pieceBitmap.getHeight() - offsetY) / 3 * 2);
+                    path.cubicTo(offsetX - bumpSize, offsetY + (float)(pieceBitmap.getHeight() - offsetY) / 6 * 5, offsetX - bumpSize, offsetY + (float)(pieceBitmap.getHeight() - offsetY) / 6, offsetX, offsetY + (float)(pieceBitmap.getHeight() - offsetY) / 3);
                     path.close();
                 }
 
